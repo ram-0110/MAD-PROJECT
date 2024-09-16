@@ -1,0 +1,552 @@
+{%extends "base.html"%} {%block title%}Home{%endblock%} {%block body%} {%
+include 'message_flash.html' with context %}
+
+<h2 class="p-5 ms-2">Your Campains</h2>
+
+<div class="d-flex flex-wrap m-2">
+  <!-- ----------Adding new campaigns---------- -->
+  <div class="m-5">
+    <div class="card" style="width: 18rem">
+      <img
+        src="/static/Boliviainteligente Unsplash.jpg"
+        class="card-img-top"
+        alt="..."
+      />
+      <div class="card-body">
+        <h5 class="card-title">Add Campaign</h5>
+        <p class="card-text">
+          This is wheare you can create new campains and manage them
+        </p>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#addcampain"
+        >
+          create campain
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ----------Displaying campaigns by current sposnsor---------- -->
+  {% for campaign in campaigns%}
+  <div class="m-5">
+    <div class="card" style="width: 18rem">
+      <img
+        src="/static/Boliviainteligente Unsplash.jpg"
+        class="card-img-top"
+        alt="..."
+      />
+      <div class="card-body">
+        <h5 class="card-title">{{campaign.name}}</h5>
+        <p class="card-text">{{campaign.description}}</p>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#{{campaign.id}}"
+        >
+          View Complete Info
+        </button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- ----------Model for Adding new campaigns---------- -->
+<div
+  class="modal fade"
+  id="addcampain"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Add campain</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="container col-12 col-md-6 center bg-white">
+          <form
+            class="form"
+            method="post"
+            action="{{ url_for('addcampaign_post') }}"
+          >
+            <h2 align="center" class="p-2 mt-3">Add a new campain</h2>
+
+            <label for="title">Title</label>
+            <input
+              type="Text"
+              id="title"
+              name="title"
+              class="form-control"
+              placeholder="Enter title"
+              required
+            />
+
+            <label for="Description">Description</label>
+            <input
+              type="text"
+              id="Description"
+              name="Description"
+              class="form-control"
+              placeholder="Enter Description"
+              required
+            />
+
+            <label for="budget">Budget</label>
+            <input
+              type="number"
+              id="budget"
+              name="budget"
+              class="form-control"
+              placeholder="Enter budget"
+              required
+            />
+
+            <label for="start_date">Start Date </label>
+            <input
+              type="date"
+              id="start_date"
+              name="start_date"
+              class="form-control"
+              placeholder="Enter Start Date"
+              required
+            />
+
+            <label for="end_date">End Date</label>
+            <input
+              type="date"
+              id="end_date"
+              name="end_date"
+              class="form-control"
+              placeholder="Enter End date"
+              required
+            />
+            <div align="center">
+              <button class="btn btn-primary mt-3" type="submit">
+                Add campain
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ------------------------------------------------------------------------------------------ -->
+
+<!-- ----------Model for displaying complete info of campaigns---------- -->
+{% for campaign in campaigns %}
+<div
+  class="modal fade"
+  id="{{campaign.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Campain Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="p-5">
+            <img
+              src="/static/Boliviainteligente Unsplash.jpg"
+              class="img-thumbnail"
+              alt=""
+            />
+            <hr />
+            <div class="p-4">
+              <h2 class="pb-2">Description</h2>
+              {%if campaign.id in flag_campain_ids%}
+              <h2 class="pb-2">This campain is flagged by admin</h2>
+
+              {%endif%}
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Title: {{ campaign.name }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Budget: {{campaign.budget}}$
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Description:{{ campaign.description }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Start Date:{{ campaign.start_date }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                End Date: {{ campaign.end_date }}
+              </h5>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+
+        {%if campaign.id not in flag_campain_ids%}
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#req{{campaign.id}}"
+        >
+          Find Influencers
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#editcampain{{campaign.id}}"
+        >
+          Edit Campain
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#delete{{campaign.id}}"
+        >
+          Delete Campain
+        </button>
+        {%endif%}
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- ----Model for displaying, serching and sending request to influencers---- -->
+{% for campaign in campaigns %}
+<div
+  class="modal fade"
+  id="req{{campaign.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Find Influencer</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="p-4">
+          <!-- Search Form -->
+          <form method="GET" action="{{ url_for('find_sponsor') }}">
+            <div class="mb-3">
+              <label for="search" class="form-label">Search Influencer</label>
+              <input
+                type="text"
+                name="search"
+                class="form-control"
+                id="search"
+                placeholder="Search by username, niche, or reach"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+          </form>
+
+          <!-- Display Influencers -->
+          {% for influencer in influencers %} {% if influencer.id not in
+          flag_influencer_ids %} {% if influencer.niche ==
+          campaign.sponsor.industry %}
+          <div class="row p-3 m-3 border rounded-3 border-secondary">
+            <div class="col-12 p-4 col-md-5">
+              <img
+                src="/static/Boliviainteligente Unsplash.jpg"
+                alt=""
+                class="col-12 mt-2 rounded-4"
+              />
+            </div>
+            <div class="col-12 p-3 col-md-7">
+              <div class="ms-5 mt-3">
+                <h5 style="color: #222222">{{influencer.user.username}}</h5>
+                <h5 style="color: #2a2a2a">
+                  Youtube reach {{influencer.youtube_reach}}
+                </h5>
+                <h5 style="color: #2a2a2a">
+                  Instagram reach {{influencer.instagram_reach}}
+                </h5>
+                <button
+                  type="button"
+                  class="btn btn-primary m-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#{{influencer.id}}and{{campaign.id}}"
+                >
+                  Send Request
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endif %} {% endif %} {% endfor %}
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- Modal for sending request with form having ammount message and requirements  -->
+{% for campaign in campaigns %} {% for influencer in influencers %}
+<div
+  class="modal fade"
+  id="{{influencer.id}}and{{campaign.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Send request</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="container col-12 col-md-6 center bg-white">
+          <form
+            class="form"
+            method="post"
+            action="{{ url_for('sponsor_influ_req',sponsorid=user.id,influencerid=influencer.id, campaignid=campaign.id) }}"
+          >
+            <h2 align="center" class="p-2 mt-3">Send Request</h2>
+
+            <label for="payment_amount">Ammount</label>
+            <input
+              type="number"
+              id="payment_amount"
+              name="payment_amount"
+              class="form-control"
+              placeholder="Ammount to be paid"
+              required
+            />
+
+            <label for="messages">Message</label>
+            <input
+              type="text"
+              id="messages"
+              name="messages"
+              class="form-control"
+              required
+            />
+
+            <label for="requirements">Requirements</label>
+            <input
+              type="text"
+              id="requirements"
+              name="requirements"
+              class="form-control"
+              required
+            />
+
+            <div align="center" class="p-2">
+              <button class="btn btn-primary" type="submit">
+                send request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %} {% endfor %}
+
+<!-- ----------Model for Editing campain---------- -->
+{% for campaign in campaigns %}
+<div
+  class="modal fade"
+  id="editcampain{{campaign.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit campain</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="container col-12 col-md-6 center bg-white">
+          <form
+            class="form"
+            method="post"
+            action="{{ url_for('edit_campaign_post',id=campaign.id) }}"
+          >
+            <h2 align="center" class="p-2 mt-3">Edit campaign</h2>
+
+            <label for="name">Title</label>
+            <input
+              type="Text"
+              id="name"
+              name="name"
+              class="form-control"
+              placeholder="{{campaign.name}}"
+            />
+
+            <label for="description">Description</label>
+            <input
+              type="text"
+              id="description"
+              name="description"
+              class="form-control"
+              placeholder="{{campaign.description}}"
+            />
+
+            <label for="budget">Budget</label>
+            <input
+              type="number"
+              id="budget"
+              name="budget"
+              class="form-control"
+              placeholder="{{campaign.budget}}"
+            />
+
+            <label for="start_date">Start Date </label>
+            <input
+              type="date"
+              id="start_date"
+              name="start_date"
+              class="form-control"
+              placeholder="{{campaign.start_date}}"
+            />
+
+            <label for="end_date">End Date</label>
+            <input
+              type="date"
+              id="end_date"
+              name="end_date"
+              class="form-control"
+              placeholder="{{campaign.end_date}}"
+            />
+            <div align="center">
+              <button class="btn btn-primary mt-3" type="submit">
+                Edit campain
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- ----------Model for Deleting campaing---------- -->
+{% for campaign in campaigns %}
+<div
+  class="modal fade"
+  id="delete{{campaign.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete campain</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="container col-12 col-md-6 center bg-white">
+          <div class="p-3">
+            <h2>Are u sure u want to delete this campaign</h2>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <a
+          href="{{ url_for('delete_campaign',id=campaign.id) }}"
+          class="btn btn-primary"
+          >Delete</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endfor %} {%endblock%}

@@ -1,0 +1,100 @@
+{%extends "base.html"%} {%block title%}Home{%endblock%} {%block body%}
+<h1>Statistics</h1>
+
+<br /><br />
+
+<div
+  class="container shadow-lg col-12 col-md-10 p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+>
+  <div class="row">
+    <h2>Influencer-Sponsor ratio</h2>
+    <div class="col-12 col-md-8">
+      <img src="{{url_for('user_distribution')}}" class="rounded-5" alt="" />
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="p-4 ms-5">
+        <div class="m-5 p-5"></div>
+
+        <h3>Influencers:{{influencer_count}}</h3>
+        <h3>Sponsors:{{sponsor_count}}</h3>
+        <br />
+        <h3>Total users:{{sponsor_count+influencer_count}}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="container shadow-lg col-12 col-md-10 p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+>
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <img src="{{url_for('spo_ind_stat')}}" class="rounded-5" alt="" />
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="m-5 p-5"></div>
+      <div class="p-4 ms-5">
+        {%for industry, count in industry_counts %}
+        <h3>{{industry}}:{{count}}</h3>
+        {%endfor%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="container shadow-lg col-12 col-md-10 p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+>
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <img src="{{url_for('inf_spo_stat')}}" class="rounded-5" alt="" />
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="m-5 p-5"></div>
+
+      <div class="p-4 ms-5">
+        {%for industry, count in niche_counts %}
+        <h3>{{industry}}:{{count}}</h3>
+        {%endfor%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="container shadow-lg col-12 col-md-10 p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+>
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <img src="{{url_for('flg_usr_camp')}}" class="rounded-5" alt="" />
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="m-5 p-5"></div>
+
+      <div class="p-4 ms-5">
+        <h3>Flagged users:{{flagged_users_count}}</h3>
+        <h3>Flagged campaigns:{{flagged_campaigns_count}}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="container shadow-lg col-12 col-md-10 p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+>
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <img src="{{url_for('ad_request_stats')}}" class="rounded-5" alt="" />
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="m-5 p-5"></div>
+
+      <div class="p-4 ms-5">
+        <h3>Pending requests:{{pending_count}}</h3>
+        <h3>Accepted/Running campaigns:{{accepted_count}}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+{%endblock%}

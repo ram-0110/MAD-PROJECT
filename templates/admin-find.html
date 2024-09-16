@@ -1,0 +1,157 @@
+{%extends "base.html"%} {%block title%}Home{%endblock%} {%block body%} {%
+include 'message_flash.html' with context %}
+<h2 class="p-5 ms-2">Running Campains</h2>
+
+<div class="d-flex flex-wrap m-2">
+  {% for campaign in campaigns %}
+  <div class="m-5">
+    <div class="card" style="width: 18rem">
+      <img
+        src="/static/Boliviainteligente Unsplash.jpg"
+        class="card-img-top"
+        alt="..."
+      />
+      <div class="card-body">
+        <h5 class="card-title">{{ campaign.name }}</h5>
+        <p class="card-text">{{ campaign.description }}</p>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#{{campaign.id}}"
+        >
+          View Complete Info
+        </button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Modal campaign details -->
+{% for campaign in campaigns %}
+<div
+  class="modal fade"
+  id="{{campaign.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Campaign Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="p-5">
+            <img
+              src="/static/Boliviainteligente Unsplash.jpg"
+              class="img-thumbnail"
+              alt=""
+            />
+            <hr />
+            <div class="p-4">
+              <h2 class="pb-2">Description</h2>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Title: {{ campaign.name }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Budget: {{campaign.budget}}$
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Description:{{ campaign.description }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Start Date:{{ campaign.start_date }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                End Date: {{ campaign.end_date }}
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#and{{campaign.id}}"
+        >
+          Flag campaign
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- model of campaign details to flag campaign -->
+
+{% for campaign in campaigns %}
+<div
+  class="modal fade"
+  id="and{{campaign.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Flag campaign</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="container col-12 col-md-6 center bg-white">
+          <form
+            class="form"
+            method="post"
+            action="{{ url_for('admin_flag_campain',campainid=campaign.id) }}"
+          >
+            <h2 align="center" class="p-2 mt-3">Flag campaign</h2>
+
+            <label for="reason">Reason</label>
+            <input
+              type="text"
+              id="reason"
+              name="reason"
+              class="form-control"
+              placeholder="Enter Reason"
+              required
+            />
+
+            <div align="center">
+              <button class="btn btn-primary m-2" type="submit">flag</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %} {%endblock%}

@@ -1,0 +1,91 @@
+{% extends "base.html" %} {% block title %}signup{% endblock %} {% block body %}
+<br />
+{% include 'message_flash.html' with context %}
+<div
+  class="container shadow-lg col-12 col-md-5 p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+>
+  <form class="form" method="post" enctype="multipart/form-data">
+    <h2 align="center" class="p-2 mt-3">Sign up as Influencer</h2>
+
+    <label for="email">Email Address</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      class="form-control"
+      placeholder="Enter Email"
+      required
+    />
+
+    <label for="username">Username</label>
+    <input
+      type="text"
+      id="username"
+      name="username"
+      class="form-control"
+      placeholder="Enter Username"
+      required
+    />
+
+    <label for="password1">Password</label>
+    <input
+      type="password"
+      id="password1"
+      name="password1"
+      class="form-control"
+      placeholder="Enter Password"
+      required
+    />
+
+    <label for="password2">Confirm Password</label>
+    <input
+      type="password"
+      id="password2"
+      name="password2"
+      class="form-control"
+      placeholder="Confirm Password"
+      required
+    />
+
+    <label for="instagram_reach">instagram_reach</label>
+    <input
+      type="number"
+      id="instagram_reach"
+      name="instagram_reach"
+      class="form-control"
+      placeholder="Enter instagram_reach"
+      required
+    />
+
+    <label for="youtube_reach">youtube_reach</label>
+    <input
+      type="number"
+      id="youtube_reach"
+      name="youtube_reach"
+      class="form-control"
+      placeholder="Enter youtube_reach"
+      required
+    />
+
+    <label for="niche">Niche</label>
+    <input
+      type="text"
+      id="niche"
+      name="niche"
+      class="form-control"
+      placeholder="Enter niche"
+      required
+    />
+
+    <div align="center">
+      <button class="btn btn-primary mt-3" type="submit">Sign Up</button>
+    </div>
+  </form>
+
+  <hr />
+  <div class="d-flex justify-content-evenly">
+    <a href="/signup/sponsor" class="btn-secondary">Sign up as Sponsor</a>
+  </div>
+</div>
+
+{% endblock %}

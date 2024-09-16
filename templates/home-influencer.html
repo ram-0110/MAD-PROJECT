@@ -1,0 +1,570 @@
+{%extends "base.html"%} {%block title%}Home{%endblock%} {%block body%} {%
+include 'message_flash.html' with context %}
+
+<!-- -----Displaying the influencer's details and edit page----- -->
+<div
+  class="container shadow-lg col-12 col-md-10 p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+>
+  <div class="row">
+    <div class="col-12 col-md-4">
+      <img
+        src="/static/Boliviainteligente Unsplash.jpg"
+        alt="image of u"
+        class="col-12 rounded-5"
+      />
+    </div>
+    <div class="col-12 col-md-8">
+      <div class="p-4 ms-5">
+        <h3 class="pb-4" style="color: #222222">Welcome {{user.username}}</h3>
+        <h4 style="color: #2a2a2a">
+          Earnings this month: {{influencer.wallet}}$
+        </h4>
+        {%if flagged%}
+        <h4 style="color: #cf5050">You are flagged</h4>
+        <h4 style="color: #cf5050">Reason: {{influencer_flag.reason}}</h4>
+        {%endif%}
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#editdetails"
+        >
+          Edit Details
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- ----------influencers active campains---------- -->
+  <div
+    class="col-12 col-md-4 border container shadow-lg p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+  >
+    <h2 class="pb-3">Active Campain:</h2>
+
+    <hr />
+    {%for adrequest in ad_requests %} {%if adrequest.status == 'Accepted'%}
+    <div class="p-3 mt-2 d-flex justify-content-between">
+      <div>
+        <h4>{{adrequest.campaign.name}}</h4>
+        <h5>Sponsor: {{adrequest.campaign.sponsor.user.username}}</h5>
+      </div>
+
+      <div class="mt-3">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#running{{adrequest.id}}"
+        >
+          View Info
+        </button>
+      </div>
+    </div>
+    <hr />
+    {%endif%} {%endfor%}
+  </div>
+
+  <!-- ----------pending requests sent by influencer---------- -->
+  <div
+    class="col-12 col-md-4 border container shadow-lg p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+  >
+    <h2 class="pb-3">Pending Requests:</h2>
+
+    <hr />
+    {%for adrequest in ad_requests %} {%if adrequest.sender_id == user.id and
+    adrequest.status == 'Pending' %}
+    <div class="p-3 mt-2 d-flex justify-content-between">
+      <div>
+        <h4>{{adrequest.campaign.name}}</h4>
+        <h5>Sponsor:{{adrequest.campaign.sponsor.user.username}}</h5>
+      </div>
+      <div class="mt-3">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#{{adrequest.id}}"
+        >
+          View Info
+        </button>
+      </div>
+    </div>
+    <hr />
+    {%endif%} {%endfor%}
+  </div>
+</div>
+
+<!-- -----Requests sent to influencer by sponsor has view info accept reject----- -->
+<div
+  class="container shadow-lg col-12 col-md-10 p-5 mt-5 center border bg-white rounded-5 max-vw-100 mb-5"
+>
+  <h2 class="p-3">New Request:</h2>
+
+  {%for adrequest in ad_requests %} {%if adrequest.receiver_id == user.id and
+  adrequest.status == 'Pending' %}
+  <div class="p-4 row">
+    <div class="col-12 col-md-7 ms-3">
+      <h5 class="">
+        {{adrequest.campaign.name}}|
+        {{adrequest.campaign.sponsor.user.username}}
+      </h5>
+    </div>
+    <div class="col-12 col-md-4">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#{{adrequest.id}}"
+      >
+        View Info
+      </button>
+
+      <a
+        href="{{url_for('req_accept',requestid=adrequest.id)}}"
+        class="btn btn-success"
+        >Accept</a
+      >
+      <a
+        href="{{url_for('req_reject',requestid=adrequest.id)}}"
+        class="btn btn-danger"
+        >Reject</a
+      >
+    </div>
+  </div>
+  {%endif%} {%endfor%}
+</div>
+
+<!-- ------------------------------------------------------------------------------ -->
+
+<!-- ------Model for Editing Influencer details ------  -->
+<div
+  class="modal fade"
+  id="editdetails"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="p-5">
+            <img
+              src="/static/Boliviainteligente Unsplash.jpg"
+              class="img-thumbnail"
+              alt=""
+            />
+            <hr />
+            <div class="p-4">
+              <form
+                class="form"
+                method="post"
+                action="{{ url_for('edit_influencer_post') }}"
+              >
+                <h2 align="center" class="p-2 mt-3">Edit Influencer</h2>
+
+                <label for="email">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-control"
+                  placeholder="{{user.email}}"
+                />
+
+                <label for="username">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  class="form-control"
+                  placeholder="{{user.username}}"
+                />
+
+                <label for="instagram_reach">instagram_reach</label>
+                <input
+                  type="number"
+                  id="instagram_reach"
+                  name="instagram_reach"
+                  class="form-control"
+                  placeholder="{{influencer.instagram_reach}}"
+                />
+
+                <label for="youtube_reach">youtube_reach</label>
+                <input
+                  type="number"
+                  id="youtube_reach"
+                  name="youtube_reach"
+                  class="form-control"
+                  placeholder="{{influencer.youtube_reach}}"
+                />
+
+                <h3>change password</h3>
+                <label for="oldpassword">Enter old password</label>
+                <input
+                  type="password"
+                  id="oldpassword"
+                  name="oldpassword"
+                  class="form-control"
+                />
+
+                <label for="newpassword">Enter New password</label>
+                <input
+                  type="password"
+                  id="newpassword"
+                  name="newpassword"
+                  class="form-control"
+                />
+
+                <label for="conformnewpassword">Enter New password</label>
+                <input
+                  type="password"
+                  id="conformnewpassword"
+                  name="conformnewpassword"
+                  class="form-control"
+                />
+
+                <div align="center">
+                  <button class="btn btn-primary mt-3" type="submit">
+                    Edit Details
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ------Model for pending requests sent by influencer------  -->
+{%for adrequest in ad_requests %} {%if adrequest.sender_id == user.id and
+adrequest.status == 'Pending' %}
+<div
+  class="modal fade"
+  id="{{adrequest.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Campain Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="p-5">
+            <img
+              src="/static/Boliviainteligente Unsplash.jpg"
+              class="img-thumbnail"
+              alt=""
+            />
+            <hr />
+            <div class="p-4">
+              <h2 class="pb-1">Description</h2>
+              <h2 class="pb-2">Status: {{adrequest.status}}</h2>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Title: {{ adrequest.campaign.name }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Money: {{adrequest.payment_amount}}$
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Budget: {{adrequest.campaign.budget}}$
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Message sent: {{adrequest.messages}}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Requirements: {{adrequest.requirements}}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Description:{{ adrequest.campaign.description }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Start Date:{{ adrequest.campaign.start_date }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                End Date: {{ adrequest.campaign.end_date }}
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{%endif%} {%endfor%}
+
+<!-- ----------Model for view info Requests sent to influencer by sponsor---------- -->
+{%for adrequest in ad_requests %} {%if adrequest.receiver_id == user.id and
+adrequest.status == 'Pending' %}
+<div
+  class="modal fade"
+  id="{{adrequest.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Campain Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="p-5">
+            <img
+              src="/static/Boliviainteligente Unsplash.jpg"
+              class="img-thumbnail"
+              alt=""
+            />
+            <hr />
+            <div class="p-4">
+              <h2 class="pb-1">Description</h2>
+              <h2 class="pb-1">Status: {{adrequest.status}}</h2>
+              <h2 class="pb-1">
+                Sent to: {{adrequest.campaign.sponsor.user.username}}
+              </h2>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Title: {{ adrequest.campaign.name }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Ammount: {{adrequest.payment_amount}}$
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Budget: {{adrequest.campaign.budget}}$
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Message: {{adrequest.messages}}$
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Requirements: {{adrequest.requirements}}$
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Description: {{ adrequest.campaign.description }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Start Date:{{ adrequest.campaign.start_date }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                End Date: {{ adrequest.campaign.end_date }}
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary m-1"
+          data-bs-toggle="modal"
+          data-bs-target="#negociate{{adrequest.id}}"
+        >
+          Negociate
+        </button>
+
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{%endif%} {%endfor%}
+
+<!-- ---------Model for influencers active campains--------- -->
+{%for adrequest in ad_requests %} {%if adrequest.status == 'Accepted'%}
+<div
+  class="modal fade"
+  id="running{{adrequest.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Campain Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="p-5 pb-1">
+            <img
+              src="/static/Boliviainteligente Unsplash.jpg"
+              class="img-thumbnail"
+              alt=""
+            />
+            <hr />
+            <div class="p-4 m-5">
+              <h2 class="f-5">Description</h2>
+              <div class="p-4 m-5 pt-1 mt-4 pb-1 mb-1">
+                <h5 class="pb-1 f-6 ms-2">Status: {{adrequest.status}}</h5>
+
+                {% if adrequest.request_creator == "Influencer"%}
+                <h5 class="p-1 f-6 ms-2">
+                  Sponsor: {{adrequest.receiver.username}}
+                </h5>
+                <h5 class="p-1 f-6 ms-2">
+                  Influencer: {{adrequest.sender.username}}
+                </h5>
+
+                {% else %}
+                <h5 class="p-1 f-6 ms-2">
+                  Influencer: {{adrequest.receiver.username}}
+                </h5>
+                <h5 class="p-1 ms-2">Sponsor: {{adrequest.sender.username}}</h5>
+
+                {% endif %}
+
+                <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                  Title: {{ adrequest.campaign.name }}
+                </h5>
+                <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                  Money You earned: {{adrequest.payment_amount}}$
+                </h5>
+                <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                  Description:{{ adrequest.campaign.description }}
+                </h5>
+                <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                  Start Date: {{ adrequest.campaign.start_date }}
+                </h5>
+                <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                  End Date: {{ adrequest.campaign.end_date }}
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{%endif%} {%endfor%}
+
+<!-- -------------Model for Negociatee has ammount ,message ,requirements-------------  -->
+{%for adrequest in ad_requests %} {%if adrequest.receiver_id == user.id and
+adrequest.status == 'Pending' %}
+<div
+  class="modal fade"
+  id="negociate{{adrequest.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Negociate</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form
+          class="form"
+          method="post"
+          action="{{ url_for('Negociate',requestid=adrequest.id) }}"
+        >
+          <h2 align="center" class="p-2 mt-3">Send Request</h2>
+
+          <label for="payment_amount">Ammount</label>
+          <input
+            type="number"
+            id="payment_amount"
+            name="payment_amount"
+            class="form-control"
+            placeholder="Fee you want to charge"
+            required
+          />
+
+          <label for="messages">Message</label>
+          <input
+            type="text"
+            id="messages"
+            name="messages"
+            class="form-control"
+          />
+
+          <label for="requirements">Requirements</label>
+          <input
+            type="text"
+            id="requirements"
+            name="requirements"
+            class="form-control"
+          />
+
+          <div align="center" class="p-3">
+            <button class="btn btn-primary m-2" type="submit">Negociate</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{%endif%} {%endfor%} {%endblock%}

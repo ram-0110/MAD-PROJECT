@@ -1,0 +1,194 @@
+{%extends "base.html"%} {%block title%}admin{%endblock%} {%block body%} {%
+include 'message_flash.html' with context %}
+
+<!-- admin details -->
+<div
+  class="container shadow-lg col-12 col-md-10 p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+>
+  <h2>Welcome Admin</h2>
+</div>
+
+<!-- Flagged campain and users -->
+<div class="row">
+  <!--  ----------Flagged campaign---------- -->
+  <div
+    class="col-12 col-md-4 border container shadow-lg p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+  >
+    <h2 class="pb-3">Flagged Campain:</h2>
+
+    <hr />
+    {%for flag in flags %} {%if flag.flagged_obj_type == "Campaign"%}
+    <div class="p-3 mt-2 d-flex justify-content-between">
+      <div>
+        <h4>{{flag.campaign.name}}</h4>
+        <h4>By: {{flag.campaign.sponsor.user.username}}</h4>
+      </div>
+
+      <div class="mt-3">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#campaign{{flag.campaign.id}}"
+        >
+          View Info
+        </button>
+      </div>
+    </div>
+    <hr />
+    {%endif%} {%endfor%}
+  </div>
+
+  <!--  ----------Flagged user---------- -->
+  <div
+    class="col-12 col-md-4 border container shadow-lg p-5 mt-5 center border bg-white rounded-5 max-vw-100"
+  >
+    <h2 class="pb-3">Flagged users:</h2>
+
+    <hr />
+    {%for flag in flags %} {%if flag.flagged_obj_type == "User"%}
+    <div class="p-3 mt-2 d-flex justify-content-between">
+      <div>
+        <h4>{{flag.user.username}}</h4>
+        <h4>Role: {{flag.user.role}}</h4>
+      </div>
+      <div class="mt-3">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#user{{flag.id}}"
+        >
+          View Info
+        </button>
+      </div>
+    </div>
+    <hr />
+    {%endif%} {%endfor%}
+  </div>
+</div>
+
+<!-- model for flagged campaign -->
+{%for flag in flags %} {%if flag.flagged_obj_type == "Campaign"%}
+<div
+  class="modal fade"
+  id="campaign{{flag.campaign.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Campain Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="p-5">
+            <img
+              src="/static/Boliviainteligente Unsplash.jpg"
+              class="img-thumbnail"
+              alt=""
+            />
+            <hr />
+            <div class="p-4">
+              <h2 class="pb-1">Description</h2>
+              <h2 class="pb-2">Status:</h2>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Title: {{ flag.campaign.name }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                By: {{ flag.campaign.sponsor.user.username }}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Budget:{{flag.campaign.budget}} $
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Description:{{flag.campaign.description}}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Start Date:{{flag.campaign.start_date}}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                End Date:{{flag.campaign.end_date}}
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a
+          href="{{ url_for('admin_remove_flag',flagid=flag.id) }}"
+          class="btn btn-primary"
+          >Remove Flag</a
+        >
+
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{%endif%} {%endfor%}
+<!-- ---------------------------------------------------------------- -->
+
+<!-- model for flagged user -->
+{%for flag in flags %} {%if flag.flagged_obj_type == "User"%}
+<div
+  class="modal fade"
+  id="user{{flag.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Campain Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="p-5">
+            <div class="p-4">
+              <h5 class="p-1 ms-2">Username: {{ flag.user.username }}</h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Email:{{flag.user.email}}
+              </h5>
+              <h5 class="p-1 ms-2" style="color: #2a2a2a">
+                Role:{{flag.user.role}}
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a
+          href="{{ url_for('admin_remove_flag',flagid=flag.id) }}"
+          class="btn btn-primary"
+          >Remove Flag</a
+        >
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{%endif%} {%endfor%} {%endblock%}

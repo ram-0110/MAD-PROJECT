@@ -1,0 +1,85 @@
+{%extends "base.html"%} {%block title%}Admin User{%endblock%} {%block body%}
+{%include 'message_flash.html' with context %} {% for people in users %}
+<div class="row p-3 m-3 border rounded-3 border-secondary">
+  <div class="col-12 p-4 col-md-5">
+    <img
+      src="/static/Boliviainteligente Unsplash.jpg"
+      alt=""
+      class="col-12 mt-2 rounded-4"
+    />
+  </div>
+
+  <div class="col-12 p-3 col-md-7">
+    <div class="ms-5 mt-3">
+      <h5 style="color: #222222">{{people.username}}</h5>
+      <h5 style="color: #2a2a2a">Role: {{people.role}}</h5>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#and{{people.id}}"
+      >
+        Flag
+      </button>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- ----------model---------- -->
+
+{% for people in users %}
+<div
+  class="modal fade"
+  id="and{{people.id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Flag user</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="container col-12 col-md-6 center bg-white">
+          <form
+            class="form"
+            method="post"
+            action="{{ url_for('admin_flag_user',userid=people.id) }}"
+          >
+            <h2 align="center" class="p-2 mt-3">Flag User</h2>
+
+            <label for="reason">Reason</label>
+            <input
+              type="text"
+              id="reason"
+              name="reason"
+              class="form-control"
+              placeholder="Enter Reason"
+              required
+            />
+
+            <div align="center">
+              <button class="btn btn-primary m-2" type="submit">flag</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %} {%endblock%}
