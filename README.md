@@ -1,7 +1,7 @@
 # Influencer-Sponsor Connection Platform
 
 ## Description
-This is a full-stack web application developed as part of the IITMBS MAD-1 course. It serves as a connection platform where sponsors can post campaigns, and both sponsors and influencers can send ad requests to collaborate on these campaigns.
+This is a full-stack web application. It serves as a connection platform where sponsors can post campaigns, and both sponsors and influencers can send ad requests to collaborate on these campaigns.
 
 The application is built using Flask for the backend, HTML, Bootstrap, and Jinja for the frontend, and SQLite as the database.
 
